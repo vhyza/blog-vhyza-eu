@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: sass | vhyza's notes]]></title>
+  <link href="http://blog.vhyza.eu/blog/categories/sass/atom.xml" rel="self"/>
+  <link href="http://blog.vhyza.eu/"/>
+  <updated>2013-09-22T15:40:56+02:00</updated>
+  <id>http://blog.vhyza.eu/</id>
+  <author>
+    <name><![CDATA[vhyza]]></name>
+    <email><![CDATA[vhyza@vhyza.eu]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Debugging Rails 4 CoffeeScript and Sass source files in Google Chrome]]></title>
+    <link href="http://blog.vhyza.eu/blog/2013/09/22/debugging-rails-4-coffeescript-and-sass-source-files-in-google-chrome/"/>
+    <updated>2013-09-22T16:00:00+02:00</updated>
+    <id>http://blog.vhyza.eu/blog/2013/09/22/debugging-rails-4-coffeescript-and-sass-source-files-in-google-chrome</id>
+    <content type="html"><![CDATA[<p>These days, it is kind of popular to generate static assets such as <code>JavaScript</code> and <code>CSS</code> by using some preprocessors. For example instead of writing pure <code>Javascript</code> you can use <code>CoffeeScript</code>, <code>TypeScript</code>... Instead of <code>CSS</code>, you can use <code>Sass</code>, <code>Less</code>, <code>Stylus</code>...</p>
+
+<p>This article shows how to debug <code>CoffeeScript</code> and <code>Sass</code> in Google Chrome using <code>Rails 4</code>.</p>
+
+<!-- more -->
+
+
+<h2>Preprocessors</h2>
+
+<p>Various preprocessors have various advantages. Such as hiding language's awkwards, adding missing features, shorter source codes etc.</p>
+
+<p>Un/fortunately web browsers don't understand this languages. So they have to be compiled into languages supported by web browser, in this case namely <code>JavaScript</code> and <code>CSS</code>.</p>
+
+<p>This step brings one fairly big disadvantage - worse debugging. For example when error occures, browser can display affected line, but in compiled language. You don't have something like mapping between source code and compiled result which is served to browser. You need to go through your code and try to guess where the problem is. Of course it is not big problem for small code base, but it can be painful with large projects. This problem should be eliminated by <code>source maps</code>.</p>
+
+<h2>Source maps</h2>
+
+<p>How it works? At the end of compiled file, there is a comment defining location of mapping file.</p>
+
+<p>Snippet from Javascript file</p>
+
+<pre><code>//# sourceMappingURL=/assets/source_maps/app/assets/javascripts/notes.map
+</code></pre>
+
+<p>Snipped from CSS file</p>
+
+<pre><code>/*# sourceMappingURL=/assets/source_maps/application.css.scss.map */
+</code></pre>
+
+<p>this location have to be accessible by browser, because it contains mapping between source code and generated one. This is how it can look like:</p>
+
+<pre><code>{
+  "version": 3,
+  "file": "",
+  "sourceRoot": "",
+  "sources": [
+    "/assets/source_maps/app/assets/javascripts/notes.coffee"
+  ],
+  "names": [],
+  "mappings": "AAOA;CAAA,KAAA,gCAAA;KAAA;;oSAAA;;CAAA,CAAA,CACE,IADF;CACE,CAAqB,EAArB,CAAA;CAAA....rest is omitted..."
+}
+</code></pre>
+
+<p>You can read about mapping in <a href="https://docs.google.com/a/google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k">Source Maps v3 proposal</a>.</p>
+
+<h2>Enabling source maps in Google Chrome</h2>
+
+<p>So how to achieve this?</p>
+
+<p><a href="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small.png"><img src="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small.png" alt="screenshot" /></a></p>
+
+<p>And this?</p>
+
+<p><a href="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-coffeescript.png"><img src="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-coffeescript.png" alt="screenshot" /></a></p>
+
+<p>You need to enable <code>source maps</code> support in Chrome's inspector.</p>
+
+<p>If you wan't to debug <code>Sass</code> you probably need to enable developer tools experiments. To do this, visit URL <code>chrome://flags/#enable-devtools-experiments</code> in Google Chrome and <code>Enable Developer Tools experiments</code>. Then restart Google Chrome.</p>
+
+<p>After Google Chrome's restart, go to inspector <code>Experiments</code> settings and enable <code>Sass stylesheet debugging</code>.</p>
+
+<p><a href="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-experiments.png"><img src="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-experiments.png" alt="experimental settings" /></a></p>
+
+<p>And finally in <code>General</code> settings check <code>Enable source maps</code>.</p>
+
+<p><a href="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-general.png"><img src="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-general.png" alt="general settings" /></a></p>
+
+<p>Enabling source maps may vary in different Chrome versions. For more info please see <a href="https://developers.google.com/chrome-developer-tools/docs/css-preprocessors">Working with CSS Preprocessors</a>; part <em>Using Sass with CSS source maps</em>.</p>
+
+<p>Then you need to generate and serve <code>source maps</code>.</p>
+
+<h2>Generating and serving source maps by Rails 4</h2>
+
+<p>Preprocessor must support <code>source maps</code>, specifically <a href="https://docs.google.com/a/google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k">v3 proposal</a>, because Chrome has recently dropped v2 support. Fortunately both <code>CoffeeScript</code> (from v1.6.1) and <code>Sass</code> (from v3.3.0.alpha.88) now supports <code>Source Maps v3</code>.</p>
+
+<p>Gem for generating <code>CoffeeScript</code> source maps is called <a href="https://github.com/markbates/coffee-rails-source-maps">coffee-rails-source-maps</a> and name for <code>Sass</code> source maps support is <a href="https://github.com/vhyza/sass-rails-source-maps">sass-rails-source-maps</a>. Both of them should be used in <code>development</code> environment only.</p>
+
+<p>To use them, simply put them into <code>Gemfile</code> development group</p>
+
+<pre><code>group :development do
+  gem 'coffee-rails-source-maps'
+  gem 'sass-rails-source-maps'
+end
+</code></pre>
+
+<p>then update your gems (<code>sass-rails-source-maps</code> depends on <code>pre</code> version of <code>sass</code> gem, because it brings supports v3 source maps).</p>
+
+<pre><code>bundle update
+</code></pre>
+
+<p>and then make sure, <code>Rails</code> regenerates assets</p>
+
+<pre><code>$ rm -rf tmp/cache/assets
+$ rm -rf public/assets
+</code></pre>
+
+<p>After assets regeneration, <code>assets/source_maps</code> directory should be created in <code>public</code>.</p>
+
+<p>When you start webserver and reload web page in Chrome, you should see <code>scss</code> and <code>coffee</code> files in inspector.</p>
+
+<p><em>For more information about gems please take a look on <a href="https://github.com/markbates/coffee-rails-source-maps">coffee-rails-source-maps</a> and <a href="https://github.com/vhyza/sass-rails-source-maps">sass-rails-source-maps</a> documentation.</em></p>
+]]></content>
+  </entry>
+  
+</feed>

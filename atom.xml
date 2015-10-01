@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[vhyza's notes]]></title>
+  <link href="http://blog.vhyza.eu/atom.xml" rel="self"/>
+  <link href="http://blog.vhyza.eu/"/>
+  <updated>2013-09-22T15:40:56+02:00</updated>
+  <id>http://blog.vhyza.eu/</id>
+  <author>
+    <name><![CDATA[vhyza]]></name>
+    <email><![CDATA[vhyza@vhyza.eu]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Debugging Rails 4 CoffeeScript and Sass source files in Google Chrome]]></title>
+    <link href="http://blog.vhyza.eu/blog/2013/09/22/debugging-rails-4-coffeescript-and-sass-source-files-in-google-chrome/"/>
+    <updated>2013-09-22T16:00:00+02:00</updated>
+    <id>http://blog.vhyza.eu/blog/2013/09/22/debugging-rails-4-coffeescript-and-sass-source-files-in-google-chrome</id>
+    <content type="html"><![CDATA[<p>These days, it is kind of popular to generate static assets such as <code>JavaScript</code> and <code>CSS</code> by using some preprocessors. For example instead of writing pure <code>Javascript</code> you can use <code>CoffeeScript</code>, <code>TypeScript</code>&#8230; Instead of <code>CSS</code>, you can use <code>Sass</code>, <code>Less</code>, <code>Stylus</code>&#8230;</p>
+
+<p>This article shows how to debug <code>CoffeeScript</code> and <code>Sass</code> in Google Chrome using <code>Rails 4</code>.</p>
+
+<!-- more -->
+
+
+<h2>Preprocessors</h2>
+
+<p>Various preprocessors have various advantages. Such as hiding language&#8217;s awkwards, adding missing features, shorter source codes etc.</p>
+
+<p>Un/fortunately web browsers don&#8217;t understand this languages. So they have to be compiled into languages supported by web browser, in this case namely <code>JavaScript</code> and <code>CSS</code>.</p>
+
+<p>This step brings one fairly big disadvantage - worse debugging. For example when error occures, browser can display affected line, but in compiled language. You don&#8217;t have something like mapping between source code and compiled result which is served to browser. You need to go through your code and try to guess where the problem is. Of course it is not big problem for small code base, but it can be painful with large projects. This problem should be eliminated by <code>source maps</code>.</p>
+
+<h2>Source maps</h2>
+
+<p>How it works? At the end of compiled file, there is a comment defining location of mapping file.</p>
+
+<p>Snippet from Javascript file</p>
+
+<pre><code>//# sourceMappingURL=/assets/source_maps/app/assets/javascripts/notes.map
+</code></pre>
+
+<p>Snipped from CSS file</p>
+
+<pre><code>/*# sourceMappingURL=/assets/source_maps/application.css.scss.map */
+</code></pre>
+
+<p>this location have to be accessible by browser, because it contains mapping between source code and generated one. This is how it can look like:</p>
+
+<pre><code>{
+  "version": 3,
+  "file": "",
+  "sourceRoot": "",
+  "sources": [
+    "/assets/source_maps/app/assets/javascripts/notes.coffee"
+  ],
+  "names": [],
+  "mappings": "AAOA;CAAA,KAAA,gCAAA;KAAA;;oSAAA;;CAAA,CAAA,CACE,IADF;CACE,CAAqB,EAArB,CAAA;CAAA....rest is omitted..."
+}
+</code></pre>
+
+<p>You can read about mapping in <a href="https://docs.google.com/a/google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k">Source Maps v3 proposal</a>.</p>
+
+<h2>Enabling source maps in Google Chrome</h2>
+
+<p>So how to achieve this?</p>
+
+<p><a href="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small.png"><img src="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small.png" alt="screenshot" /></a></p>
+
+<p>And this?</p>
+
+<p><a href="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-coffeescript.png"><img src="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-coffeescript.png" alt="screenshot" /></a></p>
+
+<p>You need to enable <code>source maps</code> support in Chrome&#8217;s inspector.</p>
+
+<p>If you wan&#8217;t to debug <code>Sass</code> you probably need to enable developer tools experiments. To do this, visit URL <code>chrome://flags/#enable-devtools-experiments</code> in Google Chrome and <code>Enable Developer Tools experiments</code>. Then restart Google Chrome.</p>
+
+<p>After Google Chrome&#8217;s restart, go to inspector <code>Experiments</code> settings and enable <code>Sass stylesheet debugging</code>.</p>
+
+<p><a href="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-experiments.png"><img src="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-experiments.png" alt="experimental settings" /></a></p>
+
+<p>And finally in <code>General</code> settings check <code>Enable source maps</code>.</p>
+
+<p><a href="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-general.png"><img src="https://dl.dropboxusercontent.com/u/21012539/screenshots/screenshot-small-general.png" alt="general settings" /></a></p>
+
+<p>Enabling source maps may vary in different Chrome versions. For more info please see <a href="https://developers.google.com/chrome-developer-tools/docs/css-preprocessors">Working with CSS Preprocessors</a>; part <em>Using Sass with CSS source maps</em>.</p>
+
+<p>Then you need to generate and serve <code>source maps</code>.</p>
+
+<h2>Generating and serving source maps by Rails 4</h2>
+
+<p>Preprocessor must support <code>source maps</code>, specifically <a href="https://docs.google.com/a/google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k">v3 proposal</a>, because Chrome has recently dropped v2 support. Fortunately both <code>CoffeeScript</code> (from v1.6.1) and <code>Sass</code> (from v3.3.0.alpha.88) now supports <code>Source Maps v3</code>.</p>
+
+<p>Gem for generating <code>CoffeeScript</code> source maps is called <a href="https://github.com/markbates/coffee-rails-source-maps">coffee-rails-source-maps</a> and name for <code>Sass</code> source maps support is <a href="https://github.com/vhyza/sass-rails-source-maps">sass-rails-source-maps</a>. Both of them should be used in <code>development</code> environment only.</p>
+
+<p>To use them, simply put them into <code>Gemfile</code> development group</p>
+
+<pre><code>group :development do
+  gem 'coffee-rails-source-maps'
+  gem 'sass-rails-source-maps'
+end
+</code></pre>
+
+<p>then update your gems (<code>sass-rails-source-maps</code> depends on <code>pre</code> version of <code>sass</code> gem, because it brings supports v3 source maps).</p>
+
+<pre><code>bundle update
+</code></pre>
+
+<p>and then make sure, <code>Rails</code> regenerates assets</p>
+
+<pre><code>$ rm -rf tmp/cache/assets
+$ rm -rf public/assets
+</code></pre>
+
+<p>After assets regeneration, <code>assets/source_maps</code> directory should be created in <code>public</code>.</p>
+
+<p>When you start webserver and reload web page in Chrome, you should see <code>scss</code> and <code>coffee</code> files in inspector.</p>
+
+<p><em>For more information about gems please take a look on <a href="https://github.com/markbates/coffee-rails-source-maps">coffee-rails-source-maps</a> and <a href="https://github.com/vhyza/sass-rails-source-maps">sass-rails-source-maps</a> documentation.</em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mount S3 into EC2 (micro) instance]]></title>
+    <link href="http://blog.vhyza.eu/blog/2011/10/03/mount-s3-into-ec2-micro-instance/"/>
+    <updated>2011-10-03T00:00:00+02:00</updated>
+    <id>http://blog.vhyza.eu/blog/2011/10/03/mount-s3-into-ec2-micro-instance</id>
+    <content type="html"><![CDATA[<p>This quick howto describes how to mount Amazon Simple Storage (S3) into Amazon Elastic Compute Cloud (EC2) instance. In my case is it micro instance with Basic 64-bit Amazon Linux AMI 2011.09.</p>
+
+<!-- more -->
+
+
+<p>First of all download <a href="http://code.google.com/p/s3fs/">s3fs</a></p>
+
+<pre><code>wget http://s3fs.googlecode.com/files/s3fs-1.61.tar.gz
+</code></pre>
+
+<p>Decompress it</p>
+
+<pre><code>tar -xzf s3fs-1.61.tar.gz
+</code></pre>
+
+<p>Now install dependencies. This step can be different for another Amazon Machine Image.</p>
+
+<pre><code>sudo yum install make glibc-devel gcc gcc-c++ libxml2-devel libcurl-devel fuse-devel openssl-devel
+</code></pre>
+
+<p>Compile it and install</p>
+
+<pre><code>cd s3fs-1.61
+make
+sudo make install
+sudo ln -s /usr/local/bin/s3fs /usr/bin/s3fs
+</code></pre>
+
+<p>Configure it</p>
+
+<pre><code>sudo touch /etc/passwd-s3fs &amp;&amp; sudo chmod 640 /etc/passwd-s3fs
+sudo vim /etc/passwd-s3fs (add your credentials in format accessKeyId:secretAccessKey)
+</code></pre>
+
+<p>Mount it</p>
+
+<pre><code>sudo mkdir /mnt/s3
+sudo s3fs S3_BUCKET_NAME /mnt/s3 -o allow_other
+</code></pre>
+
+<p><code>allow_other</code> option allows other users than root to access mounted bucket.</p>
+
+<p>You can umount bucket using <code>sudo umount /mnt/s3</code>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MacBook Pro and insert key]]></title>
+    <link href="http://blog.vhyza.eu/blog/2011/08/22/macbook-pro-and-insert-key/"/>
+    <updated>2011-08-22T09:00:00+02:00</updated>
+    <id>http://blog.vhyza.eu/blog/2011/08/22/macbook-pro-and-insert-key</id>
+    <content type="html"><![CDATA[<p>When I switched from Linux notebook to MacBook Pro I really missed <code>insert</code> key. I don&#8217;t need <code>insert</code> in OS X, but it&#8217;s useful for remote work (for example on linux machine). I found on the Internet some tips like <code>fn + enter</code> to emulate <code>insert</code>, but nothing works. I realized I don&#8217;t need <code>insert</code> in whole OS X, but only in application used for remote work. In my case it&#8217;s <a href="http://www.iterm2.com/">iterm2</a>. So here&#8217;s quick tip how to emulate <code>insert</code> in <a href="http://www.iterm2.com/">iterm2</a>.</p>
+
+<!-- more -->
+
+
+<p>Go to iterm preferences <code>⌘ + ,</code>. Click on <code>Keys</code> and add new keyboard shortcut (plus button near load preset button). Press your desired keyboard shortcut (for example <code>option + F12</code>) after that change <code>Action</code> to <code>Send Escape Sequence</code> and fill <code>Esc+</code> with <code>[2~</code>. After that you can emulate <code>insert</code> key with your keyboard shortcut.</p>
+
+<p><img src="http://blog.vhyza.eu/images/iterm_preferences.png"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Homebrew without Xcode]]></title>
+    <link href="http://blog.vhyza.eu/blog/2011/08/16/homebrew-without-xcode/"/>
+    <updated>2011-08-16T03:00:00+02:00</updated>
+    <id>http://blog.vhyza.eu/blog/2011/08/16/homebrew-without-xcode</id>
+    <content type="html"><![CDATA[<p>Xcode 4 is not small. In my case it took about 10GB of free space. I know its not a lot, especially these days when standard notebooks have hard drives with capacity about 0.5TB. But I have small SSD and 10GB is quite a lot for me. And best of all I don&#8217;t use Xcode. But I&#8217;m using <a href="http://mxcl.github.com/homebrew/">homebrew</a> for unix tools installation and it relies on GCC and other libraries (which are part of Xcode). Fortunately there is a way how to get these libraries without Xcode. So let&#8217;s get rid of it.</p>
+
+<!-- more -->
+
+
+<p>First of all uninstall whole Xcode using <code>sudo /Developer/Library/uninstall-devtools –mode=all</code> and restart your mac. As you can see, GCC is gone</p>
+
+<pre><code>vhyza@vhyza:~$ gcc
+bash: gcc: command not found
+</code></pre>
+
+<p>Now go to osx-gcc-installer <a href="https://github.com/kennethreitz/osx-gcc-installer/downloads">download page</a>, select your OS X version (Snow Leopard or Lion) and install downloaded <code>*.pkg</code>. As you can see, GCC is back.</p>
+
+<pre><code>vhyza@vhyza:~$ gcc
+i686-apple-darwin11-llvm-gcc-4.2: no input files
+</code></pre>
+
+<p>Now you can install unix tools using homebrew without Xcode (if you don&#8217;t have <a href="http://mxcl.github.com/homebrew/">homebrew</a> follow installation <a href="https://github.com/mxcl/homebrew/wiki/installation">instructions</a>).</p>
+
+<p>After that I tried to upgrade GIT. Homebrew was compaining <code>Xcode is not installed</code> but everything else seems ok.</p>
+
+<pre><code>vhyza@vhyza:~$ brew install git
+Warning: Xcode is not installed! Builds may fail!
+==&gt; Downloading http://kernel.org/pub/software/scm/git/git-1.7.6.tar.bz2
+File already downloaded in /Users/vhyza/Library/Caches/Homebrew
+==&gt; make prefix=/usr/local/Cellar/git/1.7.6 install
+==&gt; Downloading http://kernel.org/pub/software/scm/git/git-manpages-1.7.6.tar.bz2
+######################################################################## 100.0%
+==&gt; Downloading http://kernel.org/pub/software/scm/git/git-htmldocs-1.7.6.tar.bz2
+######################################################################## 100.0%
+==&gt; Caveats
+Bash completion has been installed to:
+  /usr/local/etc/bash_completion.d
+
+Emacs support has been installed to:
+  /usr/local/Cellar/git/1.7.6/share/doc/git-core/contrib/emacs
+
+The rest of the "contrib" has been installed to:
+  /usr/local/Cellar/git/1.7.6/share/contrib
+==&gt; Summary
+/usr/local/Cellar/git/1.7.6: 1071 files, 19M, built in 54 seconds
+vhyza@vhyza:~$ git --version
+git version 1.7.6
+</code></pre>
+
+<p>That&#8217;s all (in case of some failure you can always install Xcode back).</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Standalone Passenger on OS X Lion]]></title>
+    <link href="http://blog.vhyza.eu/blog/2011/08/01/standalone-passenger-on-os-x-lion/"/>
+    <updated>2011-08-01T23:39:00+02:00</updated>
+    <id>http://blog.vhyza.eu/blog/2011/08/01/standalone-passenger-on-os-x-lion</id>
+    <content type="html"><![CDATA[<p>After upgrading to Lion I can&#8217;t run standalone passenger. It throws following error when I tried to compile it using <code>passenger package-runtime</code>.</p>
+
+<pre><code>** Execute (dry run) nginx
+/Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:224:in `*': negative argument (ArgumentError)
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:224:in `show_progress'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:147:in `install!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:423:in `install_passenger_support_files'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:328:in `run_rake_task!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:323:in `popen'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:323:in `run_rake_task!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:422:in `install_passenger_support_files'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:421:in `chdir'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:421:in `install_passenger_support_files'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:143:in `install!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/abstract_installer.rb:63:in `start'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/package_runtime_command.rb:65:in `run'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:93:in `run_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:48:in `each_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:43:in `each'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:43:in `each_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:91:in `run_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:62:in `run!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:39:in `run!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/bin/passenger:32
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/bin/passenger:19:in `load'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/bin/passenger:19
+</code></pre>
+
+<p>This error is caused (probably) by newer <code>rake</code>. Workaround for this is uninstalling newer version (in my case <code>0.9.2</code>) and use older <code>0.8.7</code>. But when I executed <code>passenger package-runtime</code> after that, it throws another error.</p>
+
+<!-- more -->
+
+
+<pre><code>cc1: warnings being treated as errors
+src/http/ngx_http_file_cache.c: In function ‘ngx_http_file_cache_create_key’:
+src/http/ngx_http_file_cache.c:216: warning: ‘MD5_Init’ is deprecated (declared at /usr/include/openssl/md5.h:113)
+src/http/ngx_http_file_cache.c:226: warning: ‘MD5_Update’ is deprecated (declared at /usr/include/openssl/md5.h:114)
+src/http/ngx_http_file_cache.c:233: warning: ‘MD5_Final’ is deprecated (declared at /usr/include/openssl/md5.h:115)
+make[1]: *** [objs/src/http/ngx_http_file_cache.o] Error 1
+make: *** [build] Error 2
+</code></pre>
+
+<p>This time its nginx compile error. Thanks to <a href="http://code.google.com/p/phusion-passenger/issues/detail?id=650#c2">google code issues</a> there is a workaround too. It seems, Lion has newer version of openssl libraries and nginx calls some deprecated functions. Suggested workaround (which requires <a href="http://mxcl.github.com/homebrew/">homebrew</a>) is following.</p>
+
+<p>First install <code>openssl</code> libraries using</p>
+
+<pre><code>brew install openssl
+</code></pre>
+
+<p>then use installed <code>openssl</code> libraries instead default OS X one</p>
+
+<pre><code>brew link openssl
+</code></pre>
+
+<p>after that try build standalone passenger again.</p>
+
+<pre><code>passenger package-runtime
+</code></pre>
+
+<p>If everything is working, don&#8217;t forget to unlink homebrew <code>openssl</code> library</p>
+
+<pre><code>brew unlink openssl
+</code></pre>
+
+<p>If you get following error,</p>
+
+<pre><code>passenger start
+*** ERROR ***
+Could not start Passenger Nginx core:
+nginx: [alert] could not open error log file: open()
+"/tmp/passenger-standalone.38744/logs/error.log" failed (2: No such file or
+directory)
+nginx: [alert] Unable to start the Phusion Passenger watchdog because it
+encountered the following error during startup: Unable to start the Phusion
+Passenger logging agent because its executable
+(/Users/vhyza/.passenger/standalone/3.0.7-x86_64-ruby1.8.7-macosx-10.7/support/a
+gents/PassengerLoggingAgent) doesn't exist. This probably means that your
+Phusion Passenger installation is broken or incomplete. Please reinstall Phusion
+Passenger (-1: Unknown error)
+Stopping web server... done
+</code></pre>
+
+<p>you can try delete passenger build files</p>
+
+<pre><code>rm -rf ~/.passenger
+</code></pre>
+
+<p>and after that run</p>
+
+<pre><code>brew link openssl
+passenger start
+</code></pre>
+
+<p>If building ends with</p>
+
+<pre><code>All done!
+
+=============== Phusion Passenger Standalone web server started ===============
+PID file: /private/tmp/dummy/tmp/pids/passenger.3000.pid
+Log file: /private/tmp/dummy/log/passenger.3000.log
+Environment: development
+Accessible via: http://0.0.0.0:3000/
+
+You can stop Phusion Passenger Standalone by pressing Ctrl-C.
+===============================================================================
+</code></pre>
+
+<p>you won :). After that don&#8217;t forget to run</p>
+
+<pre><code>brew unlink openssl
+</code></pre>
+
+<p>Hope this workaround helps to run standalone passenger on Mac OS X Lion.</p>
+]]></content>
+  </entry>
+  
+</feed>

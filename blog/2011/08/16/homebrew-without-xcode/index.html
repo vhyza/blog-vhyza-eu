@@ -1,0 +1,371 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Homebrew without Xcode - vhyza's notes</title>
+  <meta name="author" content="vhyza">
+
+  
+  <meta name="description" content="Homebrew without Xcode">
+  <meta name="keywords" content="OS X, homebrew, GCC">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.vhyza.eu/blog/2011/08/16/homebrew-without-xcode/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="vhyza's notes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-24777440-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+</hgroup>
+
+</header>
+  <!-- <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav> -->
+  <div class="tucked-corners top-corners">
+    <div class="bottom-corners">
+      <div id="main">
+        <div id="content">
+          <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Homebrew without Xcode</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-16T03:00:00+02:00" pubdate data-updated="true">Aug 16<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Xcode 4 is not small. In my case it took about 10GB of free space. I know its not a lot, especially these days when standard notebooks have hard drives with capacity about 0.5TB. But I have small SSD and 10GB is quite a lot for me. And best of all I don&#8217;t use Xcode. But I&#8217;m using <a href="http://mxcl.github.com/homebrew/">homebrew</a> for unix tools installation and it relies on GCC and other libraries (which are part of Xcode). Fortunately there is a way how to get these libraries without Xcode. So let&#8217;s get rid of it.</p>
+
+<!-- more -->
+
+
+<p>First of all uninstall whole Xcode using <code>sudo /Developer/Library/uninstall-devtools –mode=all</code> and restart your mac. As you can see, GCC is gone</p>
+
+<pre><code>vhyza@vhyza:~$ gcc
+bash: gcc: command not found
+</code></pre>
+
+<p>Now go to osx-gcc-installer <a href="https://github.com/kennethreitz/osx-gcc-installer/downloads">download page</a>, select your OS X version (Snow Leopard or Lion) and install downloaded <code>*.pkg</code>. As you can see, GCC is back.</p>
+
+<pre><code>vhyza@vhyza:~$ gcc
+i686-apple-darwin11-llvm-gcc-4.2: no input files
+</code></pre>
+
+<p>Now you can install unix tools using homebrew without Xcode (if you don&#8217;t have <a href="http://mxcl.github.com/homebrew/">homebrew</a> follow installation <a href="https://github.com/mxcl/homebrew/wiki/installation">instructions</a>).</p>
+
+<p>After that I tried to upgrade GIT. Homebrew was compaining <code>Xcode is not installed</code> but everything else seems ok.</p>
+
+<pre><code>vhyza@vhyza:~$ brew install git
+Warning: Xcode is not installed! Builds may fail!
+==&gt; Downloading http://kernel.org/pub/software/scm/git/git-1.7.6.tar.bz2
+File already downloaded in /Users/vhyza/Library/Caches/Homebrew
+==&gt; make prefix=/usr/local/Cellar/git/1.7.6 install
+==&gt; Downloading http://kernel.org/pub/software/scm/git/git-manpages-1.7.6.tar.bz2
+######################################################################## 100.0%
+==&gt; Downloading http://kernel.org/pub/software/scm/git/git-htmldocs-1.7.6.tar.bz2
+######################################################################## 100.0%
+==&gt; Caveats
+Bash completion has been installed to:
+  /usr/local/etc/bash_completion.d
+
+Emacs support has been installed to:
+  /usr/local/Cellar/git/1.7.6/share/doc/git-core/contrib/emacs
+
+The rest of the "contrib" has been installed to:
+  /usr/local/Cellar/git/1.7.6/share/contrib
+==&gt; Summary
+/usr/local/Cellar/git/1.7.6: 1071 files, 19M, built in 54 seconds
+vhyza@vhyza:~$ git --version
+git version 1.7.6
+</code></pre>
+
+<p>That&#8217;s all (in case of some failure you can always install Xcode back).</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">vhyza</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-16T03:00:00+02:00" pubdate data-updated="true">Aug 16<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/os-x/'>OS X</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.vhyza.eu/blog/2011/08/16/homebrew-without-xcode/" data-via="vhyza" data-counturl="http://blog.vhyza.eu/blog/2011/08/16/homebrew-without-xcode/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+  
+  <div class="rdbWrapper" data-show-read-now="1" data-show-read-later="1" data-show-send-to-kindle="1" data-show-print="1" data-show-email="1" data-orientation="0" data-version="1" data-bg-color="transparent"></div><script type="text/javascript">(function() {var s = document.getElementsByTagName("script")[0],rdb = document.createElement("script"); rdb.type = "text/javascript"; rdb.async = true; rdb.src = document.location.protocol + "//www.readability.com/embed.js"; s.parentNode.insertBefore(rdb, s); })();</script>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/08/01/standalone-passenger-on-os-x-lion/" title="Previous Post: Standalone Passenger on OS X Lion">&laquo; Standalone Passenger on OS X Lion</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/08/22/macbook-pro-and-insert-key/" title="Next Post: MacBook Pro and insert key">MacBook Pro and insert key &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <ul id="recent_posts">
+      <li class="post">
+      <a href="http://blog.vhyza.eu" alt="Home"><img src="/images/Home.png"></a>
+      <a href="http://blog.vhyza.eu/archives/" alt="Archives"><img src="/images/Calendar.png"></a>
+      <a href="mailto:vhyza@vhyza.eu" alt="E-Mail"><img src="/images/Envelope.png"></a>
+      </li>
+  </ul>
+</section>
+
+<section>
+    <h1>Related Posts</h1>
+    <ul class="posts">
+    
+        <li class="related">
+        <a href="/blog/2011/08/16/homebrew-without-xcode/">Homebrew without Xcode</a>
+        </li>
+    
+        <li class="related">
+        <a href="/blog/2011/08/01/standalone-passenger-on-os-x-lion/">Standalone Passenger on OS X Lion</a>
+        </li>
+    
+        <li class="related">
+        <a href="/blog/2013/09/22/debugging-rails-4-coffeescript-and-sass-source-files-in-google-chrome/">Debugging Rails 4 CoffeeScript and Sass source files in Google Chrome</a>
+        </li>
+    
+        <li class="related">
+        <a href="/blog/2013/09/22/debugging-rails-4-coffeescript-and-sass-source-files-in-google-chrome/">Debugging Rails 4 CoffeeScript and Sass source files in Google Chrome</a>
+        </li>
+    
+        <li class="related">
+        <a href="/blog/2011/10/03/mount-s3-into-ec2-micro-instance/">Mount S3 into EC2 (micro) instance</a>
+        </li>
+    
+    </ul>
+    <div class='divide'></div>
+</section>
+
+<section>
+  <h1>Latest Tweets</h1>
+  <a class="twitter-timeline" data-link-color="#9c9c9c" data-chrome="nofooter noheader transparent" data-border-color="#2B2A2A" height="500" width="250" href="https://twitter.com/vhyza" data-widget-id="370313041939664897">Tweets by @vhyza</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/vhyza">@vhyza</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'vhyza',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/102046481509680421355?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer role="contentinfo">Copyright &copy; 2013 - <a href="http://vhyza.eu" target="_blank">vhyza</a> -
+<span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'blog-vhyza-eu';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.vhyza.eu/blog/2011/08/16/homebrew-without-xcode/';
+        var disqus_url = 'http://blog.vhyza.eu/blog/2011/08/16/homebrew-without-xcode/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,436 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Standalone Passenger on OS X Lion - vhyza's notes</title>
+  <meta name="author" content="vhyza">
+
+  
+  <meta name="description" content="Standalone Passenger on OS X Lion">
+  <meta name="keywords" content="ruby, passenger, OS X, Lion">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.vhyza.eu/blog/2011/08/01/standalone-passenger-on-os-x-lion/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="vhyza's notes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-24777440-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+</hgroup>
+
+</header>
+  <!-- <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav> -->
+  <div class="tucked-corners top-corners">
+    <div class="bottom-corners">
+      <div id="main">
+        <div id="content">
+          <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Standalone Passenger on OS X Lion</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-01T23:39:00+02:00" pubdate data-updated="true">Aug 1<span>st</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>After upgrading to Lion I can&#8217;t run standalone passenger. It throws following error when I tried to compile it using <code>passenger package-runtime</code>.</p>
+
+<pre><code>** Execute (dry run) nginx
+/Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:224:in `*': negative argument (ArgumentError)
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:224:in `show_progress'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:147:in `install!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:423:in `install_passenger_support_files'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:328:in `run_rake_task!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:323:in `popen'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:323:in `run_rake_task!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:422:in `install_passenger_support_files'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:421:in `chdir'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:421:in `install_passenger_support_files'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:143:in `install!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/abstract_installer.rb:63:in `start'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/package_runtime_command.rb:65:in `run'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:93:in `run_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:48:in `each_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:43:in `each'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:43:in `each_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:91:in `run_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:62:in `run!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:39:in `run!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/bin/passenger:32
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/bin/passenger:19:in `load'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/bin/passenger:19
+</code></pre>
+
+<p>This error is caused (probably) by newer <code>rake</code>. Workaround for this is uninstalling newer version (in my case <code>0.9.2</code>) and use older <code>0.8.7</code>. But when I executed <code>passenger package-runtime</code> after that, it throws another error.</p>
+
+<!-- more -->
+
+
+<pre><code>cc1: warnings being treated as errors
+src/http/ngx_http_file_cache.c: In function ‘ngx_http_file_cache_create_key’:
+src/http/ngx_http_file_cache.c:216: warning: ‘MD5_Init’ is deprecated (declared at /usr/include/openssl/md5.h:113)
+src/http/ngx_http_file_cache.c:226: warning: ‘MD5_Update’ is deprecated (declared at /usr/include/openssl/md5.h:114)
+src/http/ngx_http_file_cache.c:233: warning: ‘MD5_Final’ is deprecated (declared at /usr/include/openssl/md5.h:115)
+make[1]: *** [objs/src/http/ngx_http_file_cache.o] Error 1
+make: *** [build] Error 2
+</code></pre>
+
+<p>This time its nginx compile error. Thanks to <a href="http://code.google.com/p/phusion-passenger/issues/detail?id=650#c2">google code issues</a> there is a workaround too. It seems, Lion has newer version of openssl libraries and nginx calls some deprecated functions. Suggested workaround (which requires <a href="http://mxcl.github.com/homebrew/">homebrew</a>) is following.</p>
+
+<p>First install <code>openssl</code> libraries using</p>
+
+<pre><code>brew install openssl
+</code></pre>
+
+<p>then use installed <code>openssl</code> libraries instead default OS X one</p>
+
+<pre><code>brew link openssl
+</code></pre>
+
+<p>after that try build standalone passenger again.</p>
+
+<pre><code>passenger package-runtime
+</code></pre>
+
+<p>If everything is working, don&#8217;t forget to unlink homebrew <code>openssl</code> library</p>
+
+<pre><code>brew unlink openssl
+</code></pre>
+
+<p>If you get following error,</p>
+
+<pre><code>passenger start
+*** ERROR ***
+Could not start Passenger Nginx core:
+nginx: [alert] could not open error log file: open()
+"/tmp/passenger-standalone.38744/logs/error.log" failed (2: No such file or
+directory)
+nginx: [alert] Unable to start the Phusion Passenger watchdog because it
+encountered the following error during startup: Unable to start the Phusion
+Passenger logging agent because its executable
+(/Users/vhyza/.passenger/standalone/3.0.7-x86_64-ruby1.8.7-macosx-10.7/support/a
+gents/PassengerLoggingAgent) doesn't exist. This probably means that your
+Phusion Passenger installation is broken or incomplete. Please reinstall Phusion
+Passenger (-1: Unknown error)
+Stopping web server... done
+</code></pre>
+
+<p>you can try delete passenger build files</p>
+
+<pre><code>rm -rf ~/.passenger
+</code></pre>
+
+<p>and after that run</p>
+
+<pre><code>brew link openssl
+passenger start
+</code></pre>
+
+<p>If building ends with</p>
+
+<pre><code>All done!
+
+=============== Phusion Passenger Standalone web server started ===============
+PID file: /private/tmp/dummy/tmp/pids/passenger.3000.pid
+Log file: /private/tmp/dummy/log/passenger.3000.log
+Environment: development
+Accessible via: http://0.0.0.0:3000/
+
+You can stop Phusion Passenger Standalone by pressing Ctrl-C.
+===============================================================================
+</code></pre>
+
+<p>you won :). After that don&#8217;t forget to run</p>
+
+<pre><code>brew unlink openssl
+</code></pre>
+
+<p>Hope this workaround helps to run standalone passenger on Mac OS X Lion.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">vhyza</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-01T23:39:00+02:00" pubdate data-updated="true">Aug 1<span>st</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/os-x/'>OS X</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.vhyza.eu/blog/2011/08/01/standalone-passenger-on-os-x-lion/" data-via="vhyza" data-counturl="http://blog.vhyza.eu/blog/2011/08/01/standalone-passenger-on-os-x-lion/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+  
+  <div class="rdbWrapper" data-show-read-now="1" data-show-read-later="1" data-show-send-to-kindle="1" data-show-print="1" data-show-email="1" data-orientation="0" data-version="1" data-bg-color="transparent"></div><script type="text/javascript">(function() {var s = document.getElementsByTagName("script")[0],rdb = document.createElement("script"); rdb.type = "text/javascript"; rdb.async = true; rdb.src = document.location.protocol + "//www.readability.com/embed.js"; s.parentNode.insertBefore(rdb, s); })();</script>
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/08/16/homebrew-without-xcode/" title="Next Post: Homebrew without Xcode">Homebrew without Xcode &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <ul id="recent_posts">
+      <li class="post">
+      <a href="http://blog.vhyza.eu" alt="Home"><img src="/images/Home.png"></a>
+      <a href="http://blog.vhyza.eu/archives/" alt="Archives"><img src="/images/Calendar.png"></a>
+      <a href="mailto:vhyza@vhyza.eu" alt="E-Mail"><img src="/images/Envelope.png"></a>
+      </li>
+  </ul>
+</section>
+
+<section>
+    <h1>Related Posts</h1>
+    <ul class="posts">
+    
+        <li class="related">
+        <a href="/blog/2011/08/01/standalone-passenger-on-os-x-lion/">Standalone Passenger on OS X Lion</a>
+        </li>
+    
+        <li class="related">
+        <a href="/blog/2013/09/22/debugging-rails-4-coffeescript-and-sass-source-files-in-google-chrome/">Debugging Rails 4 CoffeeScript and Sass source files in Google Chrome</a>
+        </li>
+    
+        <li class="related">
+        <a href="/blog/2013/09/22/debugging-rails-4-coffeescript-and-sass-source-files-in-google-chrome/">Debugging Rails 4 CoffeeScript and Sass source files in Google Chrome</a>
+        </li>
+    
+        <li class="related">
+        <a href="/blog/2011/08/16/homebrew-without-xcode/">Homebrew without Xcode</a>
+        </li>
+    
+        <li class="related">
+        <a href="/blog/2011/08/22/macbook-pro-and-insert-key/">MacBook Pro and insert key</a>
+        </li>
+    
+    </ul>
+    <div class='divide'></div>
+</section>
+
+<section>
+  <h1>Latest Tweets</h1>
+  <a class="twitter-timeline" data-link-color="#9c9c9c" data-chrome="nofooter noheader transparent" data-border-color="#2B2A2A" height="500" width="250" href="https://twitter.com/vhyza" data-widget-id="370313041939664897">Tweets by @vhyza</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/vhyza">@vhyza</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'vhyza',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/102046481509680421355?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer role="contentinfo">Copyright &copy; 2013 - <a href="http://vhyza.eu" target="_blank">vhyza</a> -
+<span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'blog-vhyza-eu';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.vhyza.eu/blog/2011/08/01/standalone-passenger-on-os-x-lion/';
+        var disqus_url = 'http://blog.vhyza.eu/blog/2011/08/01/standalone-passenger-on-os-x-lion/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

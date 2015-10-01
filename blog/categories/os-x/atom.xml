@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: OS X | vhyza's notes]]></title>
+  <link href="http://blog.vhyza.eu/blog/categories/os-x/atom.xml" rel="self"/>
+  <link href="http://blog.vhyza.eu/"/>
+  <updated>2013-09-22T15:40:56+02:00</updated>
+  <id>http://blog.vhyza.eu/</id>
+  <author>
+    <name><![CDATA[vhyza]]></name>
+    <email><![CDATA[vhyza@vhyza.eu]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[MacBook Pro and insert key]]></title>
+    <link href="http://blog.vhyza.eu/blog/2011/08/22/macbook-pro-and-insert-key/"/>
+    <updated>2011-08-22T09:00:00+02:00</updated>
+    <id>http://blog.vhyza.eu/blog/2011/08/22/macbook-pro-and-insert-key</id>
+    <content type="html"><![CDATA[<p>When I switched from Linux notebook to MacBook Pro I really missed <code>insert</code> key. I don't need <code>insert</code> in OS X, but it's useful for remote work (for example on linux machine). I found on the Internet some tips like <code>fn + enter</code> to emulate <code>insert</code>, but nothing works. I realized I don't need <code>insert</code> in whole OS X, but only in application used for remote work. In my case it's <a href="http://www.iterm2.com/">iterm2</a>. So here's quick tip how to emulate <code>insert</code> in <a href="http://www.iterm2.com/">iterm2</a>.</p>
+
+<!-- more -->
+
+
+<p>Go to iterm preferences <code>⌘ + ,</code>. Click on <code>Keys</code> and add new keyboard shortcut (plus button near load preset button). Press your desired keyboard shortcut (for example <code>option + F12</code>) after that change <code>Action</code> to <code>Send Escape Sequence</code> and fill <code>Esc+</code> with <code>[2~</code>. After that you can emulate <code>insert</code> key with your keyboard shortcut.</p>
+
+<p><img src="/images/iterm_preferences.png"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Homebrew without Xcode]]></title>
+    <link href="http://blog.vhyza.eu/blog/2011/08/16/homebrew-without-xcode/"/>
+    <updated>2011-08-16T03:00:00+02:00</updated>
+    <id>http://blog.vhyza.eu/blog/2011/08/16/homebrew-without-xcode</id>
+    <content type="html"><![CDATA[<p>Xcode 4 is not small. In my case it took about 10GB of free space. I know its not a lot, especially these days when standard notebooks have hard drives with capacity about 0.5TB. But I have small SSD and 10GB is quite a lot for me. And best of all I don't use Xcode. But I'm using <a href="http://mxcl.github.com/homebrew/">homebrew</a> for unix tools installation and it relies on GCC and other libraries (which are part of Xcode). Fortunately there is a way how to get these libraries without Xcode. So let's get rid of it.</p>
+
+<!-- more -->
+
+
+<p>First of all uninstall whole Xcode using <code>sudo /Developer/Library/uninstall-devtools –mode=all</code> and restart your mac. As you can see, GCC is gone</p>
+
+<pre><code>vhyza@vhyza:~$ gcc
+bash: gcc: command not found
+</code></pre>
+
+<p>Now go to osx-gcc-installer <a href="https://github.com/kennethreitz/osx-gcc-installer/downloads">download page</a>, select your OS X version (Snow Leopard or Lion) and install downloaded <code>*.pkg</code>. As you can see, GCC is back.</p>
+
+<pre><code>vhyza@vhyza:~$ gcc
+i686-apple-darwin11-llvm-gcc-4.2: no input files
+</code></pre>
+
+<p>Now you can install unix tools using homebrew without Xcode (if you don't have <a href="http://mxcl.github.com/homebrew/">homebrew</a> follow installation <a href="https://github.com/mxcl/homebrew/wiki/installation">instructions</a>).</p>
+
+<p>After that I tried to upgrade GIT. Homebrew was compaining <code>Xcode is not installed</code> but everything else seems ok.</p>
+
+<pre><code>vhyza@vhyza:~$ brew install git
+Warning: Xcode is not installed! Builds may fail!
+==&gt; Downloading http://kernel.org/pub/software/scm/git/git-1.7.6.tar.bz2
+File already downloaded in /Users/vhyza/Library/Caches/Homebrew
+==&gt; make prefix=/usr/local/Cellar/git/1.7.6 install
+==&gt; Downloading http://kernel.org/pub/software/scm/git/git-manpages-1.7.6.tar.bz2
+######################################################################## 100.0%
+==&gt; Downloading http://kernel.org/pub/software/scm/git/git-htmldocs-1.7.6.tar.bz2
+######################################################################## 100.0%
+==&gt; Caveats
+Bash completion has been installed to:
+  /usr/local/etc/bash_completion.d
+
+Emacs support has been installed to:
+  /usr/local/Cellar/git/1.7.6/share/doc/git-core/contrib/emacs
+
+The rest of the "contrib" has been installed to:
+  /usr/local/Cellar/git/1.7.6/share/contrib
+==&gt; Summary
+/usr/local/Cellar/git/1.7.6: 1071 files, 19M, built in 54 seconds
+vhyza@vhyza:~$ git --version
+git version 1.7.6
+</code></pre>
+
+<p>That's all (in case of some failure you can always install Xcode back).</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Standalone Passenger on OS X Lion]]></title>
+    <link href="http://blog.vhyza.eu/blog/2011/08/01/standalone-passenger-on-os-x-lion/"/>
+    <updated>2011-08-01T23:39:00+02:00</updated>
+    <id>http://blog.vhyza.eu/blog/2011/08/01/standalone-passenger-on-os-x-lion</id>
+    <content type="html"><![CDATA[<p>After upgrading to Lion I can't run standalone passenger. It throws following error when I tried to compile it using <code>passenger package-runtime</code>.</p>
+
+<pre><code>** Execute (dry run) nginx
+/Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:224:in `*': negative argument (ArgumentError)
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:224:in `show_progress'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:147:in `install!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:423:in `install_passenger_support_files'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:328:in `run_rake_task!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:323:in `popen'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:323:in `run_rake_task!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:422:in `install_passenger_support_files'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:421:in `chdir'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:421:in `install_passenger_support_files'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/runtime_installer.rb:143:in `install!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/abstract_installer.rb:63:in `start'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/package_runtime_command.rb:65:in `run'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:93:in `run_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:48:in `each_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:43:in `each'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:43:in `each_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:91:in `run_command'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:62:in `run!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/lib/phusion_passenger/standalone/main.rb:39:in `run!'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/gems/passenger-3.0.7/bin/passenger:32
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/bin/passenger:19:in `load'
+    from /Users/vhyza/.rvm/gems/ruby-1.8.7-p330@dummy/bin/passenger:19
+</code></pre>
+
+<p>This error is caused (probably) by newer <code>rake</code>. Workaround for this is uninstalling newer version (in my case <code>0.9.2</code>) and use older <code>0.8.7</code>. But when I executed <code>passenger package-runtime</code> after that, it throws another error.</p>
+
+<!-- more -->
+
+
+<pre><code>cc1: warnings being treated as errors
+src/http/ngx_http_file_cache.c: In function ‘ngx_http_file_cache_create_key’:
+src/http/ngx_http_file_cache.c:216: warning: ‘MD5_Init’ is deprecated (declared at /usr/include/openssl/md5.h:113)
+src/http/ngx_http_file_cache.c:226: warning: ‘MD5_Update’ is deprecated (declared at /usr/include/openssl/md5.h:114)
+src/http/ngx_http_file_cache.c:233: warning: ‘MD5_Final’ is deprecated (declared at /usr/include/openssl/md5.h:115)
+make[1]: *** [objs/src/http/ngx_http_file_cache.o] Error 1
+make: *** [build] Error 2
+</code></pre>
+
+<p>This time its nginx compile error. Thanks to <a href="http://code.google.com/p/phusion-passenger/issues/detail?id=650#c2">google code issues</a> there is a workaround too. It seems, Lion has newer version of openssl libraries and nginx calls some deprecated functions. Suggested workaround (which requires <a href="http://mxcl.github.com/homebrew/">homebrew</a>) is following.</p>
+
+<p>First install <code>openssl</code> libraries using</p>
+
+<pre><code>brew install openssl
+</code></pre>
+
+<p>then use installed <code>openssl</code> libraries instead default OS X one</p>
+
+<pre><code>brew link openssl
+</code></pre>
+
+<p>after that try build standalone passenger again.</p>
+
+<pre><code>passenger package-runtime
+</code></pre>
+
+<p>If everything is working, don't forget to unlink homebrew <code>openssl</code> library</p>
+
+<pre><code>brew unlink openssl
+</code></pre>
+
+<p>If you get following error,</p>
+
+<pre><code>passenger start
+*** ERROR ***
+Could not start Passenger Nginx core:
+nginx: [alert] could not open error log file: open()
+"/tmp/passenger-standalone.38744/logs/error.log" failed (2: No such file or
+directory)
+nginx: [alert] Unable to start the Phusion Passenger watchdog because it
+encountered the following error during startup: Unable to start the Phusion
+Passenger logging agent because its executable
+(/Users/vhyza/.passenger/standalone/3.0.7-x86_64-ruby1.8.7-macosx-10.7/support/a
+gents/PassengerLoggingAgent) doesn't exist. This probably means that your
+Phusion Passenger installation is broken or incomplete. Please reinstall Phusion
+Passenger (-1: Unknown error)
+Stopping web server... done
+</code></pre>
+
+<p>you can try delete passenger build files</p>
+
+<pre><code>rm -rf ~/.passenger
+</code></pre>
+
+<p>and after that run</p>
+
+<pre><code>brew link openssl
+passenger start
+</code></pre>
+
+<p>If building ends with</p>
+
+<pre><code>All done!
+
+=============== Phusion Passenger Standalone web server started ===============
+PID file: /private/tmp/dummy/tmp/pids/passenger.3000.pid
+Log file: /private/tmp/dummy/log/passenger.3000.log
+Environment: development
+Accessible via: http://0.0.0.0:3000/
+
+You can stop Phusion Passenger Standalone by pressing Ctrl-C.
+===============================================================================
+</code></pre>
+
+<p>you won :). After that don't forget to run</p>
+
+<pre><code>brew unlink openssl
+</code></pre>
+
+<p>Hope this workaround helps to run standalone passenger on Mac OS X Lion.</p>
+]]></content>
+  </entry>
+  
+</feed>

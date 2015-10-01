@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
+    <url>
+        <loc>http://blog.vhyza.eu/blog/2011/08/01/standalone-passenger-on-os-x-lion/</loc>
+        <lastmod>2013-08-21T23:56:08+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.vhyza.eu/blog/2011/08/16/homebrew-without-xcode/</loc>
+        <lastmod>2013-08-21T23:56:08+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.vhyza.eu/blog/2011/08/22/macbook-pro-and-insert-key/</loc>
+        <lastmod>2013-08-21T23:58:29+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.vhyza.eu/blog/2011/10/03/mount-s3-into-ec2-micro-instance/</loc>
+        <lastmod>2013-08-21T23:58:29+02:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://blog.vhyza.eu/blog/2013/09/22/debugging-rails-4-coffeescript-and-sass-source-files-in-google-chrome/
+        </loc>
+        <lastmod>2013-09-22T15:40:55+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.vhyza.eu/archives/</loc>
+        <lastmod>2013-09-22T15:40:55+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.vhyza.eu/blog/archives/</loc>
+        <lastmod>2013-09-22T15:40:55+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.vhyza.eu/</loc>
+        <lastmod>2013-09-22T15:40:55+02:00</lastmod>
+    </url>
+</urlset>
